@@ -23,7 +23,7 @@ const userModel= new mongoose.Schema({
         type:String,
         required:[true,'please enter a password'],
         minlength:8,
-        select:false
+        // select:false
     },
     confirmPassword:{
         type:String,
@@ -34,19 +34,26 @@ const userModel= new mongoose.Schema({
             },
             message:'Confirm password does not match password'
         }
-    },
-    photo:{
-        type:String,
-        default:'ibrahim'
-
     }
+    
 
 })
+userModel.methods.comparePasswordInDb=async(pswd,pswdb)=>{
+  return  await bcrypt.compare(pswd,pswdb)
+}
+userModel.methods.createResetPasswordToken=function(){
+    const resetToken=crypto.randomBytes(32)
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetTokenExpires=Date.now()+ 10 *60 *1000;
+  console.log(resetToken,this.passwordResetToken);
+  return resetToken;
+}
+
 userModel.pre('save',async function(next){
     if(!this.isModified('password'))return next();
    this.password= await bcrypt.hash(this.password,9);
-   this.confirmPassword= undefined;
-   conaole.log('hello')
+   this.confirmPassword= undefined; 
+   console.log('hello')
    next()
 })
 const user= mongoose.model('Users',userModel)

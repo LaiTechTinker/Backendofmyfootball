@@ -1,0 +1,7 @@
+const express=require('express')
+const VideoController=require('../controller/VideoController')
+const Videoroute=express.Router();
+Videoroute.route('/').post(VideoController.postvid).get(VideoController.getallvid);
+
+
+module.exports=Videoroute
