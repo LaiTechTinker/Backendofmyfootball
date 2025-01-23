@@ -11,7 +11,7 @@ Router1.route('/Login').post(usercontroller.Login)
 // Router for handling forgot password
 Router1.route('/forgotpassword').post(usercontroller.forgotpassword)
 // router for handling resetpassword
-Router1.route('/resetpasword').post(usercontroller.resetpassword)
+Router1.route('/resetpasword/:token').patch(usercontroller.resetpassword)
 
 
 

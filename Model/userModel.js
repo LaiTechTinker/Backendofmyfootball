@@ -39,7 +39,9 @@ const userModel= new mongoose.Schema({
     passwordResetToken:{
         type:String
     },
-    passwordResetTokenExpires:{type:Date}
+    passwordResetTokenExpires:{type:Date},
+    passwordchangedAt:{type:Date}
+
     
 
 })

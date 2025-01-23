@@ -1,7 +1,11 @@
 const userScheme= require('../Model/userModel');
 const bycrypt= require('bcryptjs')
 const jwt =require('jsonwebtoken')
+const nodemailer=require('nodemailer')
+const crypto=require('crypto')
 const Customerr=require('../Errorfolder/error')
+const sendemail=require('./utils/email')
+
 
 // sigup function creation block
 const jwtsecret= process.env.SECRET
@@ -67,6 +71,7 @@ if(res.status(200)){
 }
 // this code block handle forget password function
 exports.forgotpassword = async(req,res,next)=>{
+    // this code block finds the user with the inputed email
     try{
         const user= await userScheme.findOne({email:req.body.email})
         if(!user){
@@ -75,14 +80,62 @@ exports.forgotpassword = async(req,res,next)=>{
                 message:'we could not find the user with this email'
             })
     }
-user.createResetPasswordToken()
+    // this calls the CreateResetPassword on the user with the requested email
+const resettoken=user.createResetPasswordToken()
 await user.save({validateBeforeSave:false})
 res.status(200).json({
     status:'success',
     data:user.passwordResetToken
 })
+// the nodmailer function
+
+const transporter = nodemailer.createTransport({
+    service:'gmail',
+    host: 'smtp.gmail.com', // Replace with your SMTP host (e.g., 'smtp.gmail.com' for Gmail)
+    port: 587, // Replace with the appropriate port (587 for TLS, 465 for SSL, etc.)
+    secure: false, // Use true for port 465, false for other ports
+    auth: {
+      user: 'layiibrahim32@gmail.com', // Replace with your email
+      pass: 'huys wbmv ysad vose', // Replace with your email password or app password
+    },
+  });
+   const resetUrl=`${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resettoken}`;
+  
+  // Email options
+  const mailOptions = {
+    from: '"ibrahim" layiibrahim32@gmail.com', // Sender address
+    to: user.email, // List of recipients (separate multiple emails with commas)
+    subject: 'Hello from Node.js', // Subject line
+    text: resetUrl // Plain text body
+    
+  };
+  
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      console.log('Email sent successfully:', info.response);
+    }
+  });
+// const resetUrl=`${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resettoken}`;
+// const message=`use the below link to reset your password\n\n${resetUrl}\n\n this link will expire in the next ten minutes`
+// try{await sendemail({
+//     email:user.email,
+//     subject:'password change received',
+//     message:message
+// })
+// res.status(200).json({
+//     status:'success',
+//     message:'reset token sent'
+// })
+// }catch(err){
+//     user.passwordResetToken=undefined
+//     user.passwordResetTokenExpires=undefined
+//     user.save({validateBeforeSave:false})
+// }
 }catch(err){
-    res.status(400).json({
+    res.status(400).json({ 
         status:'fail',
         message:err.message
     })
@@ -91,6 +144,28 @@ res.status(200).json({
 
 }
 
-exports.resetpassword=(req,res,next)=>{
+exports.resetpassword=async(req,res,next)=>{
+    try{
+    const token=crypto.createHash('sha256').update(req.params.token).digest('hex')
+const user= await userScheme.findOne({passwordResetToken:token,passwordResetToken:{$gt:Date.now()}})
+if(!user){
+    res.status(404).json({
+        status:"fail",
+        message:"token is invalid or has expired"
+    })
+}
+user.password=req.body.password;
+user.confirmPassword=req.body.confirmPassword;
+user.passwordResetToken=undefined;
+user.passwordResetToken=undefined;
+user.passwordchangedAt=Date.now()
+user.save();
+// login in the user once the password is changed
 
+    }catch(err){
+        res.status(400).json({
+            status:'fail',
+            message:err.message
+        })
+    }
 }
