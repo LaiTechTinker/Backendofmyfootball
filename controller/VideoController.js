@@ -1,4 +1,6 @@
 const videoModel =require('../Model/MoviesModel')
+const multer= require('multer')
+const path=require('path')
 
 exports.postvid=async(req,res)=>{
 try{

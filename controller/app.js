@@ -1,7 +1,7 @@
 const express =require('express')
 const app=express()
 app.use(express.json());
-// app.use(express.static)
+// app.use(express.static())
 
 const userRouter = require('../Router/userRouter')
 const VideoRoute=  require('../Router/VideoRouter')

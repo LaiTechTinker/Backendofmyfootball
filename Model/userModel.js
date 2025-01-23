@@ -1,5 +1,6 @@
 const mongoose=require('mongoose')
 const bcrypt= require('bcryptjs')
+const crypto=require('crypto')
 const validator=require('validator')
 const userModel= new mongoose.Schema({
     email:{
@@ -34,15 +35,19 @@ const userModel= new mongoose.Schema({
             },
             message:'Confirm password does not match password'
         }
-    }
+    }, 
+    passwordResetToken:{
+        type:String
+    },
+    passwordResetTokenExpires:{type:Date}
     
 
 })
 userModel.methods.comparePasswordInDb=async(pswd,pswdb)=>{
   return  await bcrypt.compare(pswd,pswdb)
 }
-userModel.methods.createResetPasswordToken=function(){
-    const resetToken=crypto.randomBytes(32)
+userModel.methods.createResetPasswordToken = function(){
+    const resetToken=crypto.randomBytes(32).toString('hex')
   this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
   this.passwordResetTokenExpires=Date.now()+ 10 *60 *1000;
   console.log(resetToken,this.passwordResetToken);
