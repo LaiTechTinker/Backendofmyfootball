@@ -146,26 +146,34 @@ const transporter = nodemailer.createTransport({
 
 exports.resetpassword=async(req,res,next)=>{
     try{
-    const token=crypto.createHash('sha256').update(req.params.token).digest('hex')
-const user= await userScheme.findOne({passwordResetToken:token,passwordResetToken:{$gt:Date.now()}})
+        console.log(req.params)
+    // const token=crypto.createHash('sha256').update(req.params.token).digest('hex')
+    const token=req.params.token
+const user= await userScheme.findOne({passwordResetToken:token})
 if(!user){
     res.status(404).json({
         status:"fail",
         message:"token is invalid or has expired"
     })
-}
+}else if(user){
 user.password=req.body.password;
 user.confirmPassword=req.body.confirmPassword;
 user.passwordResetToken=undefined;
-user.passwordResetToken=undefined;
+user.passwordResetTokenExpires=undefined;
 user.passwordchangedAt=Date.now()
 user.save();
 // login in the user once the password is changed
-
+const tokener= jwt.sign({email:user.email},process.env.SECRET);
+res.status(200).json({
+    status:"success",
+    data:tokener
+    
+})}
     }catch(err){
         res.status(400).json({
             status:'fail',
             message:err.message
         })
+        console.log(err.message)
     }
 }
