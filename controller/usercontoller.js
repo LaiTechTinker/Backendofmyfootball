@@ -2,7 +2,7 @@ const userScheme= require('../Model/userModel');
 const bycrypt= require('bcryptjs')
 const jwt =require('jsonwebtoken')
 const nodemailer=require('nodemailer')
-const crypto=require('crypto')
+const crypto=require('crypto') 
 const Customerr=require('../Errorfolder/error')
 const sendemail=require('./utils/email')
 
@@ -118,22 +118,7 @@ const transporter = nodemailer.createTransport({
       console.log('Email sent successfully:', info.response);
     }
   });
-// const resetUrl=`${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resettoken}`;
-// const message=`use the below link to reset your password\n\n${resetUrl}\n\n this link will expire in the next ten minutes`
-// try{await sendemail({
-//     email:user.email,
-//     subject:'password change received',
-//     message:message
-// })
-// res.status(200).json({
-//     status:'success',
-//     message:'reset token sent'
-// })
-// }catch(err){
-//     user.passwordResetToken=undefined
-//     user.passwordResetTokenExpires=undefined
-//     user.save({validateBeforeSave:false})
-// }
+
 }catch(err){
     res.status(400).json({ 
         status:'fail',
@@ -175,5 +160,24 @@ res.status(200).json({
             message:err.message
         })
         console.log(err.message)
+    }
+}
+// this is the block code fetches all the users in the database
+exports.getallusers=async(req,res,next)=>{
+    try{
+const allusers=await userScheme.find()
+if(allusers.length===0){
+    res.status(404).json({
+        message:"there is no user in the database"
+    })
+}
+res.status(200).json({
+    status:"success",
+    data:{allusers}
+})
+    }catch(err){
+        res.status(404).json({
+            message:err.message
+        })
     }
 }

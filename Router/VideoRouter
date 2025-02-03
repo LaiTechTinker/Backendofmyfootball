@@ -1,7 +1,13 @@
 const express=require('express')
-const VideoController=require('../controller/VideoController')
-const Videoroute=express.Router();
-Videoroute.route('/').post(VideoController.postvid).get(VideoController.getallvid);
+const vidroute=express.Router()
+const vidcontroller=require('../controller/VideoController')
+const picController=require('../controller/picturescontroller')
+
+vidroute.route('/postvid')
+.post(vidcontroller.upload.single('video'),vidcontroller.postvid)
+vidroute.route('/postpic').post(picController.uploadpic.single('picture'),picController.postpic)
+vidroute.route('/allpictures').get(picController.getallpic)
+vidroute.route('/allvideos').get(vidcontroller.getallvid)
 
 
-module.exports=Videoroute
+module.exports=vidroute

@@ -12,6 +12,8 @@ Router1.route('/Login').post(usercontroller.Login)
 Router1.route('/forgotpassword').post(usercontroller.forgotpassword)
 // router for handling resetpassword
 Router1.route('/resetpassword/:token').patch(usercontroller.resetpassword)
+// this route is for getting all the users in  the database
+Router1.route('/getallusers').get(usercontroller.getallusers) 
 
 
 

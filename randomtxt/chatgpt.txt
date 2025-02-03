@@ -1,74 +1,51 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const multer = require("multer");
-const path = require("path");
+const videoModel = require('../Model/videoschema');
+const multer = require('multer');
+const express = require('express');
+const router = express.Router();
 
-const app = express();
-
-// Middleware for parsing JSON
-app.use(express.json());
-
-// MongoDB connection
-mongoose.connect("mongodb://localhost:27017/videoDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "Connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
-});
-
-// Define a Mongoose schema
-const videoSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String },
-  videoPath: { type: String, required: true },
-  uploadedAt: { type: Date, default: Date.now },
-});
-
-const Video = mongoose.model("Video", videoSchema);
-
-// Configure Multer for file uploads
+// Configure Multer storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Directory to store uploaded videos
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
+    destination: (req, file, cb) => {
+        cb(null, "imagestore"); // ✅ Corrected relative path
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}--${file.originalname}`);
+    },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage }); // ✅ Move multer config outside
 
-// POST endpoint to upload video
-app.post("/upload", upload.single("video"), async (req, res) => {
-  try {
-    const { title, description } = req.body;
+// Video upload function
+exports.postvid = async (req, res) => {
+    try {
+        const { title, description } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ error: "Video file is required" });
+        if (!req.file) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Video file is required",
+            });
+        }
+
+        const realvid = new videoModel({
+            title,
+            description,
+            videoPath: req.file.path, // ✅ Save file path correctly
+        });
+
+        await realvid.save();
+        console.log(req.file);
+
+        res.status(200).json({ message: "Video uploaded successfully" });
+    } catch (err) {
+        res.status(500).json({
+            status: "fail",
+            message: err.message,
+        });
     }
+};
 
-    // Save video metadata to the database
-    const video = new Video({
-      title,
-      description,
-      videoPath: req.file.path,
-    });
-    await video.save();
+// Define the route in your Express app
+router.post('/upload', upload.single('video'), exports.postvid);
 
-    res.status(201).json({ message: "Video uploaded successfully", video });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Serve static files from the uploads directory
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Start the server
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+module.exports = router;
