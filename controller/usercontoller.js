@@ -166,13 +166,14 @@ res.status(200).json({
 exports.getallusers=async(req,res,next)=>{
     try{
 const allusers=await userScheme.find()
-if(allusers.length===0){
+if(allusers.length===null){
     res.status(404).json({
         message:"there is no user in the database"
     })
 }
 res.status(200).json({
     status:"success",
+    length:allusers.length,
     data:{allusers}
 })
     }catch(err){

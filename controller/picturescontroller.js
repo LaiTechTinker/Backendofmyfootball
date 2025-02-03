@@ -55,8 +55,8 @@ res.status(200).json({
 exports.getallpic=async(req,res,next)=>{
     try{
     const all_pictures= await picschema.find()
-    if(all_pictures===null){
-        res.status(400).json({
+    if(all_pictures.length===0){
+        res.status(404).json({
             message:'there is no picture in database'
         })
 
