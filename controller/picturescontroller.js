@@ -73,3 +73,24 @@ res.status(404).json({
 })
     }
 }
+// / this code block will delete a picture with the specific id
+exports.deletepic=async(req,res,next)=>{
+    try{
+    const reqId=req.params.id
+const picfordelete=await picschema.findByIdAndDelete(reqId)
+if(!picfordelete){
+    res.status(404).json({
+        message:"can't find picture with the inputed id"
+    })
+}else{
+    res.status(200).json({
+        message:`the pic with the ${reqId} has been deleted`
+    })
+}
+
+    }catch(error){
+        res.status(404).json({
+            message:error.message
+        }) 
+    }
+}

@@ -182,3 +182,24 @@ res.status(200).json({
         })
     }
 }
+// this code block will delete a user with the specific id
+exports.deleteuser=async(req,res,next)=>{
+    try{
+    const reqId=req.params.id
+const userfordelete=await userScheme.findByIdAndDelete(reqId)
+if(!userfordelete){
+    res.status(404).json({
+        message:"can't find user with the inputed id"
+    })
+}else{
+    res.status(200).json({
+        message:`the user with the ${reqId} has been deleted`
+    })
+}
+
+    }catch(error){
+        res.status(404).json({
+            message:error.message
+        }) 
+    }
+}

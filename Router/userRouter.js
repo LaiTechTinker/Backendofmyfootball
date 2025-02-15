@@ -14,6 +14,9 @@ Router1.route('/forgotpassword').post(usercontroller.forgotpassword)
 Router1.route('/resetpassword/:token').patch(usercontroller.resetpassword)
 // this route is for getting all the users in  the database
 Router1.route('/getallusers').get(usercontroller.getallusers) 
+// this route is for deleting user in the database
+Router1.route('/deleteuser/:id').post(usercontroller.deleteuser) 
+
 
 
 

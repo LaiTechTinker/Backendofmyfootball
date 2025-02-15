@@ -75,3 +75,27 @@ res.status(404).json({
 
 
 }
+// the following code block will delete a video from the database
+exports.deletevid=async(req,res,next)=>{
+    try{
+    const reqId=req.params.id
+    const vidfordelete=await videoModel.findByIdAndDelete(reqId)
+    if(!vidfordelete){
+       return res.status(404).json({
+            message:"can't find vid with this id in db"
+        })
+    }else{
+
+
+
+    res.status(200).json({
+        message:`the video with the ${reqId} has been deleted`
+    })
+    }
+
+    }catch(error){
+        res.status(404).json({
+            message:error.message
+        }) 
+    }
+}

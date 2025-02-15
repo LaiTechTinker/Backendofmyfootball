@@ -8,6 +8,9 @@ vidroute.route('/postvid')
 vidroute.route('/postpic').post(picController.uploadpic.single('picture'),picController.postpic)
 vidroute.route('/allpictures').get(picController.getallpic)
 vidroute.route('/allvideos').get(vidcontroller.getallvid)
+vidroute.route('/deletevid/:id').delete(vidcontroller.deletevid)
+vidroute.route('/deletepic/:id').delete(picController.deletepic)
+
 
 
 module.exports=vidroute
