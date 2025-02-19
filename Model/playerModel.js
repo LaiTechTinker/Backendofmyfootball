@@ -9,4 +9,5 @@ const playerModel= new mongoose.Schema({
     Accuracy :{type:Number, default:1.0,required:true},
     Speed :{type:Number, default:1.0,required:true}
 })
-module.exports=playerModel
+const playerScheme=mongoose.model('playerinfo', playerModel)
+module.exports=playerScheme

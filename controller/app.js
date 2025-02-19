@@ -11,6 +11,7 @@ const playerRouter=require('../Router/playerRouter')
 app.use('/api/v1/users',userRouter);
 app.use('/api/v1/videos',VideoRoute)
 app.use('/api/v1/players',playerRouter)
+
 // app.use('api/v1/pictures',)
 // app.use('/api/')
 module.exports=app

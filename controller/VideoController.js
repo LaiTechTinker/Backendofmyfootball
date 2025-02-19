@@ -51,8 +51,12 @@ res.status(404).json({
 }
 // this code block will get all videos from the database
 exports.getallvid=async(req,res,next)=>{
+
     try{
+        const query =req.query;
+        console.log(query)
     const allmovies=await videoModel.find()
+   
   if(allmovies===null){
             res.status(404).json({
                 status:'null',
