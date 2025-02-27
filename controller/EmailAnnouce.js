@@ -12,9 +12,9 @@ const transporter=nodemailer.createTransport({
     },
 })
 const mailOptions={
-    from: '"ibrahim" layiibrahim32@gmail.com', // Sender address
+    from: '"ibrahim" layiibrahim32@gmail.com', // Sender address 
     to: req.body.email, // List of recipients (separate multiple emails with commas)
-    subject: req.body.subject, // Subject line
+    subject: req.body.Tittle, // Subject line
     text: req.body.message// Plain text body
 }
 transporter.sendMail(mailOptions,(error,info)=>{

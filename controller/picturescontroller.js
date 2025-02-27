@@ -64,7 +64,7 @@ exports.getallpic=async(req,res,next)=>{
     res.status(200).json({
         status:'success',
         length:all_pictures.length, 
-        data:{all_pictures}
+        data:all_pictures
     })
     }catch(err){
 res.status(404).json({

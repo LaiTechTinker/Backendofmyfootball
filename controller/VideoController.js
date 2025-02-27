@@ -53,8 +53,7 @@ res.status(404).json({
 exports.getallvid=async(req,res,next)=>{
 
     try{
-        const query =req.query;
-        console.log(query)
+       
     const allmovies=await videoModel.find()
    
   if(allmovies===null){
@@ -66,7 +65,7 @@ exports.getallvid=async(req,res,next)=>{
         res.status(200).json({
             status:'success',
             length:allmovies.length,
-            data:allmovies
+            movies:allmovies
 
         }
     )
