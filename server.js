@@ -3,7 +3,7 @@ const dotenv=require('dotenv')
 dotenv.config({path:'./custom.env'})
 const mongoose= require('mongoose')
 const app= require('./controller/app');
-const port=7000;
+const port=3000;
 
 // console.log(process.env.PORT)
 //connecting with Database

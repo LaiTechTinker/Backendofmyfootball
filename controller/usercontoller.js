@@ -50,6 +50,7 @@ const token= jwt.sign({email:olduser.email},process.env.SECRET);
 if(res.status(200)){
     return res.status(200).json({
         status:'success',
+        user:olduser,
         data:token   
     })
 }else{

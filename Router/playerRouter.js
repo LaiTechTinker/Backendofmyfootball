@@ -5,6 +5,6 @@ const playerController=require('../controller/playercontroller')
 
 playerRouter.route('/createplayer').post(playerController.postPlayerinfo)
 playerRouter.route('/getallplayer').get(playerController.getallplayer)
-playerRouter.route('')
+playerRouter.route('/getallplayer/:id').get(playerController.getplayerinfo)
 
 module.exports=playerRouter
